@@ -41,12 +41,12 @@ int main(void)
 		}while(replay());
 		book = freeDico(book);
 	}
-    return 0;
+	return 0;
 }
 
 double random(void) 
 {
-    return (double) rand() / RAND_MAX;
+	return (double) rand() / RAND_MAX;
 }
 
 int randint(const int a, const int b)
@@ -64,7 +64,7 @@ int replay(void)
 		       "2. Quitter\n");
 	   scanf("%d", &tmp);
 	   clearStdin();
-	}while(tmp != 1 && tmp != 2); 
+	}while(tmp != 1 && tmp != 2);
 	return tmp == 1;
 }
 
@@ -86,7 +86,7 @@ int update(const char word[], char answer[], const char letter, const size_t len
 			answer[i] = letter;
 			success = 1;
 		}
-	}      
+	}
 	return success;
 }
 
@@ -96,16 +96,16 @@ void play(const char word[])
 	size_t len_word = strlen(word), attempts = 10, i;
 	for(i = 0; i < len_word; i++)
 		answer[i] = '*';
-    while(attempts > 0 && strcmp(answer, word))
-    {
+	while(attempts > 0 && strcmp(answer, word))
+	{
 		printf("\nIl vous reste %u essai%s\nLe mot est %s.\nEntrez une lettre : ",  
 		       attempts, attempts == 1 ? "." : "s.", answer);
-        letter = (char) toupper(getLetter());
+		letter = (char) toupper(getLetter());
 		if(update(word, answer, letter, len_word))
 			printf("Bravo, %c est bien dans le mot.\n", letter);
 		else
 			attempts --;
-    }
+	}
 	if(attempts > 0)
 		printf("Bravo, vous avez gagne en %u essai%s, le mot etait bien %s.\n", 
 		       10 - attempts, attempts == 10 ? "." : "s.", word);
