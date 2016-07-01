@@ -108,7 +108,7 @@ void play(const char word[])
     }
 	if(attempts > 0)
 		printf("Bravo, vous avez gagne en %u essai%s, le mot etait bien %s.\n", 
-	           10 - attempts, attempts == 10 ? "." : "s.", word);
+		       10 - attempts, attempts == 10 ? "." : "s.", word);
 	else
 		printf("Vous avez perdu, looser. Le mot etait %s.", word);
 }
