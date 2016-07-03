@@ -56,7 +56,7 @@ int randint(const int a, const int b)
 
 int replay(void)
 {
-	int tmp;
+	int tmp = 0;
 	do
 	{
 		printf("\n\nVoulez vous recommencer ?\n"
@@ -93,9 +93,8 @@ int update(const char word[], char answer[], const char letter, const size_t len
 void play(const char word[])
 {
 	char answer[SIZE_MAX] = {0}, letter = 0; 
-	size_t len_word = strlen(word), attempts = 10, i;
-	for(i = 0; i < len_word; i++)
-		answer[i] = '*';
+	size_t len_word = strlen(word), attempts = 10;
+	memset(answer, '*', len_word * sizeof(char)); /* Peut être remplacé par une boucle for */
 	while(attempts > 0 && strcmp(answer, word))
 	{
 		printf("\nIl vous reste %u essai%s\nLe mot est %s.\nEntrez une lettre : ",  
