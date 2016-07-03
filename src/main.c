@@ -1,10 +1,23 @@
+/**
+ * \file main.c
+ * \brief Petit jeu du pendu
+ * \author Karnaj
+ *
+ * Jeu du pendu en langage C. Le programme choisit un mot au hasard que le
+ * joueur doit deviner en proposant des lettres (il a droit à 10 mauvaises
+ * lettres). Un fichier « dico.dic » doit être placé dans un dossier « rsc»
+ * à côté de l’exécutable. Celui-ci doit contenir un mot par ligne (chaque
+ *  mot d’au plus 50 caractères), la première ligne contenant le nombre de
+ * mots du fichier.
+ *
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
 #include <ctype.h>
 /**
- * \def SIZE_MAX Taille maximale d’un mot de la structure s_book. 
+ * \def SIZE_MAX Taille maximale d’un mot de la structure s_book.
  */
 #define SIZE_MAX 50
 /**
@@ -14,7 +27,7 @@
 
 /**
  * \struct s_book
- * \brief Objet représentant un dictionnaire 
+ * \brief Objet représentant un dictionnaire
  *
  * s_book est une structure contenant une liste de mots (de taille
  * maximale `SIZE_MAX`) et le nombre de mots de cette liste.
@@ -22,7 +35,7 @@
 struct s_book
 {
 	unsigned int size;
-	char (*words)[SIZE_MAX];
+	char (*words)[SIZE_MAX + 1];
 };
 
 struct s_book *freeDico(struct s_book *book);
@@ -68,7 +81,7 @@ int main(void)
  * \brief Tire au hasard un nombre entre 0 et 1.
  * \return Un flottant entre 0 et 1.
  */
-double random(void) 
+double random(void)
 {
 	return (double) rand() / RAND_MAX;
 }
@@ -123,7 +136,7 @@ struct s_book *freeDico(struct s_book *book)
  *        lettre est bien dans le mot référent.
  * \param word Le mot référent, celui que l’utilisateur doit trouver.
  * \param answer Le mot-réponse de l’utilisateur.
- * \param letter La lettre a vérifier. 
+ * \param letter La lettre a vérifier.
  * \param len_word La longueur du mot à vérifier.
  * \return NULL.
  */
@@ -144,21 +157,21 @@ int update(const char word[], char answer[], const char letter, const size_t len
 
 /**
  * \fn void play(const char word[])
- * \brief Fonction de jeu du pendu.  
+ * \brief Fonction de jeu du pendu.
  * \param word Le mot à trouver.
- * 
+ *
  * La fonction prend en paramètre un mot que l’utilisateur doit trouver. À chaque tour,
- * il propose une nouvelle lettre jusqu’à avoir trouvé toutes les lettres du mot. Il a droit 
+ * il propose une nouvelle lettre jusqu’à avoir trouvé toutes les lettres du mot. Il a droit
  * à 10 échecs.
  */
 void play(const char word[])
 {
-	char answer[SIZE_MAX] = {0}, letter = 0; 
+	char answer[SIZE_MAX] = {0}, letter = 0;
 	size_t len_word = strlen(word), attempts = 10;
 	memset(answer, '*', len_word * sizeof(char)); /* Peut être remplacé par une boucle for */
 	while(attempts > 0 && strcmp(answer, word))
 	{
-		printf("\nIl vous reste %u essai%s\nLe mot est %s.\nEntrez une lettre : ",  
+		printf("\nIl vous reste %u essai%s\nLe mot est %s.\nEntrez une lettre : ",
 		       attempts, attempts == 1 ? "." : "s.", answer);
 		letter = (char) toupper(getLetter());
 		if(update(word, answer, letter, len_word))
@@ -167,7 +180,7 @@ void play(const char word[])
 			attempts --;
 	}
 	if(attempts > 0)
-		printf("Bravo, vous avez gagne en %u essai%s, le mot etait bien %s.\n", 
+		printf("Bravo, vous avez gagne en %u essai%s, le mot etait bien %s.\n",
 		       10 - attempts, attempts == 10 ? "." : "s.", word);
 	else
 		printf("Vous avez perdu, looser. Le mot etait %s.", word);
@@ -189,9 +202,9 @@ void clearStdin(void)
 /**
  * \fn char getLetter(void)
  * \brief Demande à l’utilisateur une lettre de l’alphabet.
- * 
+ *
  * \return Une lettre de l’alphabet.
- * 
+ *
  * La fonction redemande à l’utilisateur de rentrer une lettre tant que sa saisie
  * n’est pas valide.
  */
@@ -211,13 +224,13 @@ char getLetter(void)
  * \fn FILE *loadFile(const char path[])
  * \brief Ouvre le fichier dont le chemin est path.
  * \param path Chemin du fichier à ouvrir.
- * \return Un pointeur sur FILE correspondant au fichier ouvert (NULL en cas d’erreur). 
+ * \return Un pointeur sur FILE correspondant au fichier ouvert (NULL en cas d’erreur).
  */
 FILE *loadFile(const char path[])
 {
 	FILE *file = fopen(path, "r");
 	if(NULL == file)
-		perror("Erreur chargement file dictionnaire : ");
+		perror("Erreur chargement file dictionnaire ");
 	return file;
 }
 
@@ -230,11 +243,11 @@ struct s_book *loadBook(void)
 {
 	struct s_book *book = malloc(sizeof(book));
 	if(NULL == book)
-		perror("Erreur malloc struct s_book : ");
+		perror("Erreur malloc struct s_book ");
 	else
 	{
-		book->words = NULL;
 		FILE *file = loadFile(PATH);
+		book->words = NULL;
 		if(NULL == file)
 			book = freeDico(book);
 		else
@@ -253,9 +266,9 @@ struct s_book *loadBook(void)
  * \param book Pointeur sur la structure s_book dans laquelle les mots doivent être chargés.
  * \param file Correspond au fichier contenant les mots.
  * \return 0 en cas de succès et -1 en cas d’erreur.
- * 
+ *
  * La fonction suppose que le fichier est formaté de la manière suivante :
- * 
+ *
  * - le nombre de mots en première ligner du fichier ;
  * - puis un mot par ligne.
  */
@@ -266,11 +279,11 @@ int loadWords(struct s_book *const book, FILE *const file)
 	book->words = malloc(book->size * sizeof(*book->words));
 	if(book->words == NULL)
 	{
-		perror("Erreur malloc : ");
+		perror("Erreur malloc ");
 		return -1;
 	}
 	for(i = 0; i < book->size; i++)
-		fscanf(file, "%100s%*[^\n]", book->words[i]);
+		fscanf(file, "%50s%*[^\n]", book->words[i]);
 	return 0;
 }
 
@@ -282,6 +295,6 @@ int loadWords(struct s_book *const book, FILE *const file)
  */
 char *getWord(const struct s_book *const book)
 {
-	int i = randint(0, book->size);
+	int i = randint(0, (int)book->size);
 	return book->words[i];
 }
