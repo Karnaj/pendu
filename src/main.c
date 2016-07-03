@@ -123,14 +123,14 @@ void clearStdin(void)
 
 char getLetter(void)
 {
-	char i;
-	while(!scanf("%[a-zA-Z]c",&i))
+	char c = 0;
+	while(!scanf("%[a-zA-Z]c",&c))
 	{
 		clearStdin();
 		printf("Erreur, votre saisie est invalide. Recommencez :");
 	}
 	clearStdin();
-	return i;
+	return c;
 }
 
 FILE *loadFile(const char path[])
@@ -164,7 +164,7 @@ struct s_book *loadBook(void)
 
 int loadWords(struct s_book *const book, FILE *const file)
 {
-	size_t i;
+	size_t i = 0;
 	fscanf(file, "%u%*[^\n]", &book->size);
 	book->words = malloc(book->size * sizeof(*book->words));
 	if(book->words == NULL)
