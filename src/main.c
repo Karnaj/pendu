@@ -3,9 +3,22 @@
 #include <time.h>
 #include <string.h>
 #include <ctype.h>
+/**
+ * \def SIZE_MAX Taille maximale d’un mot de la structure s_book. 
+ */
 #define SIZE_MAX 50
+/**
+ * \def PATH Chemin du dictionaire à charger.
+ */
 #define PATH "rsc/dico.dic"
 
+/**
+ * \struct s_book
+ * \brief Objet représentant un dictionnaire 
+ *
+ * s_book est une structure contenant une liste de mots (de taille
+ * maximale `SIZE_MAX`) et le nombre de mots de cette liste.
+ */
 struct s_book
 {
 	unsigned int size;
@@ -28,6 +41,12 @@ int randint(const int a, const int b);
 char getLetter(void);
 void clearStdin(void);
 
+/**
+ * \fn int main (void)
+ * \brief Entrée du programme. Lance le jeu du pendu
+ *
+ * \return 0 - Arrêt normal du programme.
+ */
 int main(void)
 {
 	struct s_book *book = loadBook();
@@ -44,16 +63,33 @@ int main(void)
 	return 0;
 }
 
+/**
+ * \fn double random(void)
+ * \brief Tire au hasard un nombre entre 0 et 1.
+ * \return Un flottant entre 0 et 1.
+ */
 double random(void) 
 {
 	return (double) rand() / RAND_MAX;
 }
 
+/**
+ * \fn int randint(const int a, const int b)
+ * \brief Tire au hasard un entier entre a et b.
+ * \param a Borne inférieure.
+ * \param b Borne supérieure.
+ * \return Un entier entre a et b.
+ */
 int randint(const int a, const int b)
 {
 	return (int)(a + (b - a) * random());
 }
 
+/**
+ * \fn int replay(void)
+ * \brief Demande à l’utilisateur s’il veut rejouer.
+ * \return Une valeur non nulle si l’utilisateur veut rejouer, 0 sinon.
+ */
 int replay(void)
 {
 	int tmp = 0;
@@ -68,6 +104,12 @@ int replay(void)
 	return tmp == 1;
 }
 
+/**
+ * \fn struct s_book *freeDico(struct s_book *book)
+ * \brief Libère une structure s_book allouée dynamiquement.
+ * \param book Un pointeur sur la structure s_book allouée dynamiquement.
+ * \return NULL.
+ */
 struct s_book *freeDico(struct s_book *book)
 {
 	free(book->words);
@@ -75,6 +117,16 @@ struct s_book *freeDico(struct s_book *book)
 	return NULL;
 }
 
+/**
+ * \fn int update(const char word[], char answer[], const char letter, const size_t len_word)
+ * \brief Met à jour le mot-réponse de l’utilisateur en fonction d’une lettre et vérifie que cette
+ *        lettre est bien dans le mot référent.
+ * \param word Le mot référent, celui que l’utilisateur doit trouver.
+ * \param answer Le mot-réponse de l’utilisateur.
+ * \param letter La lettre a vérifier. 
+ * \param len_word La longueur du mot à vérifier.
+ * \return NULL.
+ */
 int update(const char word[], char answer[], const char letter, const size_t len_word)
 {
 	int success = 0;
@@ -90,6 +142,15 @@ int update(const char word[], char answer[], const char letter, const size_t len
 	return success;
 }
 
+/**
+ * \fn void play(const char word[])
+ * \brief Fonction de jeu du pendu.  
+ * \param word Le mot à trouver.
+ * 
+ * La fonction prend en paramètre un mot que l’utilisateur doit trouver. À chaque tour,
+ * il propose une nouvelle lettre jusqu’à avoir trouvé toutes les lettres du mot. Il a droit 
+ * à 10 échecs.
+ */
 void play(const char word[])
 {
 	char answer[SIZE_MAX] = {0}, letter = 0; 
@@ -112,6 +173,10 @@ void play(const char word[])
 		printf("Vous avez perdu, looser. Le mot etait %s.", word);
 }
 
+/**
+ * \fn void clearStdin(void)
+ * \brief Vide le buffer.
+ */
 void clearStdin(void)
 {
 	int c;
@@ -121,6 +186,15 @@ void clearStdin(void)
 	}while (c != '\n' && c != EOF);
 }
 
+/**
+ * \fn char getLetter(void)
+ * \brief Demande à l’utilisateur une lettre de l’alphabet.
+ * 
+ * \return Une lettre de l’alphabet.
+ * 
+ * La fonction redemande à l’utilisateur de rentrer une lettre tant que sa saisie
+ * n’est pas valide.
+ */
 char getLetter(void)
 {
 	char c = 0;
@@ -133,6 +207,12 @@ char getLetter(void)
 	return c;
 }
 
+/**
+ * \fn FILE *loadFile(const char path[])
+ * \brief Ouvre le fichier dont le chemin est path.
+ * \param path Chemin du fichier à ouvrir.
+ * \return Un pointeur sur FILE correspondant au fichier ouvert (NULL en cas d’erreur). 
+ */
 FILE *loadFile(const char path[])
 {
 	FILE *file = fopen(path, "r");
@@ -141,6 +221,11 @@ FILE *loadFile(const char path[])
 	return file;
 }
 
+/**
+ * \fn struct s_book *loadBook(void)
+ * \brief Charge un dictionnaire depuis le fichier dont le chemin est PATH.
+ * \return Un pointeur sur la structure s_book créée (NULL en cas d’erreur).
+ */
 struct s_book *loadBook(void)
 {
 	struct s_book *book = malloc(sizeof(book));
@@ -162,6 +247,18 @@ struct s_book *loadBook(void)
 	return book;
 }
 
+/**
+ * \fn int loadWords(struct s_book *const book, FILE *const file)
+ * \brief Charge les mots d’un fichier dans une structure s_book.
+ * \param book Pointeur sur la structure s_book dans laquelle les mots doivent être chargés.
+ * \param file Correspond au fichier contenant les mots.
+ * \return 0 en cas de succès et -1 en cas d’erreur.
+ * 
+ * La fonction suppose que le fichier est formaté de la manière suivante :
+ * 
+ * - le nombre de mots en première ligner du fichier ;
+ * - puis un mot par ligne.
+ */
 int loadWords(struct s_book *const book, FILE *const file)
 {
 	size_t i = 0;
@@ -177,6 +274,12 @@ int loadWords(struct s_book *const book, FILE *const file)
 	return 0;
 }
 
+/**
+ * \fn char *getWord(const struct s_book *const book)
+ * \brief Tire un mot au hasrd dans un objet s_book.
+ * \param book Pointeur sur la structure s_book dans laquelle tirer le mot.
+ * \return Le mot tiré.
+ */
 char *getWord(const struct s_book *const book)
 {
 	int i = randint(0, book->size);
