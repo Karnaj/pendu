@@ -295,6 +295,6 @@ int loadWords(struct s_book *const book, FILE *const file)
  */
 char *getWord(const struct s_book *const book)
 {
-	int i = randint(0, (int)book->size);
+	int i = randint(0, (int)book->size - 1);
 	return book->words[i];
 }
