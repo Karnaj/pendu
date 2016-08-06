@@ -275,7 +275,11 @@ struct s_book *loadBook(void)
 int loadWords(struct s_book *const book, FILE *const file)
 {
 	size_t i = 0;
-	fscanf(file, "%u%*[^\n]", &book->size);
+	if(fscanf(file, "%u%*[^\n]", &book->size) == 0)
+	{
+		printf("Le fichier dictionnaire est corrompu.\n");
+		return -1;
+	}
 	book->words = malloc(book->size * sizeof(*book->words));
 	if(book->words == NULL)
 	{
@@ -283,7 +287,11 @@ int loadWords(struct s_book *const book, FILE *const file)
 		return -1;
 	}
 	for(i = 0; i < book->size; i++)
-		fscanf(file, "%50s%*[^\n]", book->words[i]);
+		if(fscanf(file, "%50s%*[^\n]", book->words[i]) == 0)
+		{
+			printf("Le fichier dictionnaire est corrompu.\n");
+			return -1;
+		}
 	return 0;
 }
 
