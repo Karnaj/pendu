@@ -17,9 +17,9 @@
 #include <string.h>
 #include <ctype.h>
 /**
- * \def SIZE_MAX Taille maximale d’un mot de la structure s_book.
+ * \def LEN_MAX Taille maximale d’un mot de la structure s_book.
  */
-#define SIZE_MAX 50
+#define LEN_MAX 50
 /**
  * \def PATH Chemin du dictionaire à charger.
  */
@@ -30,12 +30,12 @@
  * \brief Objet représentant un dictionnaire
  *
  * s_book est une structure contenant une liste de mots (de taille
- * maximale `SIZE_MAX`) et le nombre de mots de cette liste.
+ * maximale `LEN_MAX`) et le nombre de mots de cette liste.
  */
 struct s_book
 {
 	unsigned int size;
-	char (*words)[SIZE_MAX + 1];
+	char (*words)[LEN_MAX + 1];
 };
 
 struct s_book *freeDico(struct s_book *book);
@@ -166,7 +166,7 @@ int update(const char word[], char answer[], const char letter, const size_t len
  */
 void play(const char word[])
 {
-	char answer[SIZE_MAX] = {0}, letter = 0;
+	char answer[LEN_MAX] = {0}, letter = 0;
 	size_t len_word = strlen(word), attempts = 10;
 	memset(answer, '*', len_word * sizeof(char)); /* Peut être remplacé par une boucle for */
 	while(attempts > 0 && strcmp(answer, word))
@@ -193,10 +193,7 @@ void play(const char word[])
 void clearStdin(void)
 {
 	int c;
-	do
-	{
-		c = getchar();
-	}while (c != '\n' && c != EOF);
+	while((c = getchar()) != EOF && c != '\n');
 }
 
 /**
